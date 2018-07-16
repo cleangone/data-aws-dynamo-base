@@ -28,7 +28,7 @@ public class BaseNamedEntity extends BaseEntity
         setName(name);
     }
 
-    public String getEnabledString()
+    @DynamoDBIgnore public String getEnabledString()
     {
         return enabled ? "Enabled" : "Disabled";
     }
