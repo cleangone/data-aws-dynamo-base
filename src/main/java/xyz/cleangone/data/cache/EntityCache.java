@@ -21,6 +21,7 @@ public class EntityCache <T extends BaseEntity>
 
     private final EntityType entityType;
     private final Integer maxEntities;
+    private final long bypassTime;
 
     public EntityCache(EntityType entityType)
     {
@@ -28,8 +29,13 @@ public class EntityCache <T extends BaseEntity>
     }
     public EntityCache(EntityType entityType, Integer maxEntities)
     {
+        this(entityType, maxEntities, 1000);
+    }
+    public EntityCache(EntityType entityType, Integer maxEntities, long bypassTime)
+    {
         this.entityType = entityType;
         this.maxEntities = maxEntities;
+        this.bypassTime = bypassTime;
     }
 
     public void clear(BaseNamedEntity keyEntity) { clear(keyEntity.getId()); }
@@ -60,9 +66,9 @@ public class EntityCache <T extends BaseEntity>
         }
 
         Date lastChecked = entityIdLastChecked.get(keyEntityId);
-        if (lastChecked != null && lastChecked.getTime() + 5000 > start.getTime())
+        if (lastChecked != null && lastChecked.getTime() + bypassTime > start.getTime())
         {
-            // checked lastTouch within last 5 secs
+            // checked lastTouch within the bypassTime
             hit(keyEntityId, keyEntityName, orgId, start);
             return entityCacheItem.getEntities();
         }
